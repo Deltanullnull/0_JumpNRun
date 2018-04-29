@@ -56,14 +56,7 @@ public class PlayerMovement : MonoBehaviour {
 
                 //moveDirection = new Vector3(moveHorizontal, 0, 0);
 
-                if (Input.GetKey(KeyCode.Space) && !jumping)
-                {
-                    Debug.Log("Jump");
-
-                    jumping = true;
-
-                    
-                }
+                
             }
             else
             {
@@ -76,8 +69,19 @@ public class PlayerMovement : MonoBehaviour {
                     
             }
 
-            moveDirection = new Vector3(currentMoveHorizontal, 0, 0);
+            moveDirection = new Vector3(currentMoveHorizontal, 0, 0) * speed / 2f;
 
+            if (Input.GetKey(KeyCode.Space))
+            {
+                Debug.Log("Jump");
+
+                moveDirection.y = jumpSpeed;
+
+                inAir = true;
+
+            }
+
+            
             //moveDirection = transform.TransformDirection(moveDirection);
 
             //charController.Move(moveDirection);
@@ -86,7 +90,11 @@ public class PlayerMovement : MonoBehaviour {
         else
         {
             animator.SetBool("Grounded", false);
+
+            inAir = true;
         }
+
+        moveDirection.y -= gravity * Time.deltaTime;
 
         // TODO if moveDirection not zero, start coroutine
 
