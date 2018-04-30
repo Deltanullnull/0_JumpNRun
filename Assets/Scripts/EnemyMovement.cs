@@ -28,6 +28,8 @@ public class EnemyMovement : MonoBehaviour {
 
     public void Die()
     {
+        IsAlive = false;
+
         bodyCollider.enabled = headCollider.enabled = false;
     }
 }

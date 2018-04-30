@@ -13,6 +13,9 @@ public class PlayerMovement : MonoBehaviour {
 
     private bool jumping = false;
 
+    [SerializeField]
+    private int health;
+
     public float speed = 6.0F;
     public float jumpSpeed = 8.0F;
     public float gravity = 20.0F;
@@ -23,6 +26,9 @@ public class PlayerMovement : MonoBehaviour {
 
     private bool killedEnemy = false;
     bool isAlive = true;
+    bool isDying = false;
+
+    Vector3 impactForce = Vector3.zero;
 
     // Use this for initialization
     void Awake ()
@@ -41,18 +47,34 @@ public class PlayerMovement : MonoBehaviour {
         float moveHorizontalPre = moveHorizontal;
         float moveVertical = 0f;
 
-        if (Input.GetKey(KeyCode.A))
-            moveHorizontal = -1f;
-        else if (Input.GetKey(KeyCode.D))
-            moveHorizontal = 1f;
-        else
-            moveHorizontal = 0f;
+        
 
         // Fell to the death
-        if (transform.position.y < -2f)
+        if (transform.position.y < -2f || isDying)
         {
             Die();
             return;
+        }
+
+        if (impactForce.magnitude > 0.1f)
+        {
+            Knockback();
+
+            currentMoveHorizontal = 0f;
+
+            animator.SetBool("WasHit", false);
+
+            return;
+        }
+        //else
+        {
+            impactForce = Vector3.zero;
+            if (Input.GetKey(KeyCode.A))
+                moveHorizontal = -1f;
+            else if (Input.GetKey(KeyCode.D))
+                moveHorizontal = 1f;
+            else
+                moveHorizontal = 0f;
         }
 
         if (Mathf.Abs(moveHorizontal - currentMoveHorizontal) > 0.01f)
@@ -66,6 +88,7 @@ public class PlayerMovement : MonoBehaviour {
             {
                 // TODO set animation
                 animator.SetBool("Grounded", true);
+                
 
                 inAir = false;
 
@@ -127,6 +150,13 @@ public class PlayerMovement : MonoBehaviour {
         DestroyImmediate(gameObject);
     }
 
+    void Knockback()
+    {
+        charController.Move(impactForce * Time.deltaTime);
+
+        impactForce = Vector3.Lerp(impactForce, Vector3.zero, 5 * Time.deltaTime);
+    }
+
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
@@ -138,6 +168,21 @@ public class PlayerMovement : MonoBehaviour {
             if (hit.collider.GetType() == typeof(BoxCollider)) // Body
             {
                 Debug.Log("Ouch");
+
+                animator.SetBool("WasHit", true);
+
+                health--;
+
+                if (health == 0)
+                {
+                    isDying = true;
+                    return;
+                }
+
+                impactForce = new Vector3(-2f, 4f, 0);
+
+                //animator.SetBool("Grounded", false);
+                inAir = true;
             }
             else if (hit.collider.GetType() == typeof(SphereCollider)) // Head
             {
@@ -168,8 +213,6 @@ public class PlayerMovement : MonoBehaviour {
 
     void KillEnemy(GameObject enemy)
     {
-        enemy.GetComponent<EnemyMovement>().IsAlive = false;
-
         enemy.GetComponent<EnemyMovement>().Die();
 
         killedEnemy = true;
