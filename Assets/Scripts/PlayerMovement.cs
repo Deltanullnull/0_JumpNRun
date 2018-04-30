@@ -21,6 +21,9 @@ public class PlayerMovement : MonoBehaviour {
     float moveHorizontal = 0f;
     float currentMoveHorizontal = 0f;
 
+    private bool killedEnemy = false;
+    bool isAlive = true;
+
     // Use this for initialization
     void Awake ()
     {
@@ -32,6 +35,9 @@ public class PlayerMovement : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (!isAlive)
+            return;
+
         float moveHorizontalPre = moveHorizontal;
         float moveVertical = 0f;
 
@@ -42,8 +48,17 @@ public class PlayerMovement : MonoBehaviour {
         else
             moveHorizontal = 0f;
 
+        // Fell to the death
+        if (transform.position.y < -2f)
+        {
+            Die();
+            return;
+        }
 
-
+        if (Mathf.Abs(moveHorizontal - currentMoveHorizontal) > 0.01f)
+        {
+            currentMoveHorizontal = Mathf.Lerp(currentMoveHorizontal, moveHorizontal, Time.deltaTime * speed);
+        }
 
         if (charController.isGrounded)
         {
@@ -58,63 +73,106 @@ public class PlayerMovement : MonoBehaviour {
 
                 
             }
-            else
+
+            moveDirection = Vector3.zero;
+
+            //moveDirection = new Vector3(currentMoveHorizontal, 0, 0) * speed / 2f;
+
+            if (Input.GetKey(KeyCode.Space) && !killedEnemy)
             {
-                //animator.SetFloat("MoveSpeed", moveHorizontal);
-
-                if (moveHorizontal != moveHorizontalPre)
-                {
-                    StartCoroutine(AccelerateMovement());
-                }
-                    
-            }
-
-            moveDirection = new Vector3(currentMoveHorizontal, 0, 0) * speed / 2f;
-
-            if (Input.GetKey(KeyCode.Space))
-            {
-                Debug.Log("Jump");
-
-                moveDirection.y = jumpSpeed;
-
-                inAir = true;
+                Jump();
 
             }
-
-            
-            //moveDirection = transform.TransformDirection(moveDirection);
-
-            //charController.Move(moveDirection);
             
         }
         else
         {
+            
+
             animator.SetBool("Grounded", false);
 
             inAir = true;
         }
 
+        if (killedEnemy)
+            Jump();
+
+        moveDirection.x = currentMoveHorizontal * speed / 2f;
+        
         moveDirection.y -= gravity * Time.deltaTime;
 
-        // TODO if moveDirection not zero, start coroutine
-
         charController.Move(moveDirection * Time.deltaTime);
-   
+
+        animator.SetFloat("MoveSpeed", currentMoveHorizontal);
+
     }
 
-    IEnumerator AccelerateMovement()
+    void Jump()
     {
+        killedEnemy = false;
 
-        while (Mathf.Abs(moveHorizontal - currentMoveHorizontal) > 0.01f)
+        Debug.Log("Jump");
+
+        moveDirection.y = jumpSpeed;
+
+        inAir = true;
+    }
+
+    void Die()
+    {
+        Debug.Log("I just died in your arms tonight");
+
+        isAlive = false;
+
+        DestroyImmediate(gameObject);
+    }
+
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.tag == "Platform")
+            return;
+
+        if (hit.gameObject.tag == "Enemy" && hit.gameObject.GetComponent<EnemyMovement>().IsAlive)
         {
-            currentMoveHorizontal = Mathf.Lerp(currentMoveHorizontal, moveHorizontal, Time.deltaTime * speed);
+            if (hit.collider.GetType() == typeof(BoxCollider)) // Body
+            {
+                Debug.Log("Ouch");
+            }
+            else if (hit.collider.GetType() == typeof(SphereCollider)) // Head
+            {
+                Debug.Log("Kill");
 
-            animator.SetFloat("MoveSpeed", currentMoveHorizontal);
+                KillEnemy(hit.gameObject);
+            }
 
-            yield return null;
+            
         }
 
-        //yield return null;
+        
+    }
 
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Triggered");
+
+        if (other.tag == "Enemy")
+        {
+            Debug.Log("Collided with enemy");
+
+            // TODO kill enemy
+            KillEnemy(other.gameObject);
+        }
+    }
+
+
+    void KillEnemy(GameObject enemy)
+    {
+        enemy.GetComponent<EnemyMovement>().IsAlive = false;
+
+        enemy.GetComponent<EnemyMovement>().Die();
+
+        killedEnemy = true;
+        //Destroy(enemy);
     }
 }
