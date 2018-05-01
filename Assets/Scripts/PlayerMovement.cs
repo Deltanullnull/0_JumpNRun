@@ -28,6 +28,9 @@ public class PlayerMovement : MonoBehaviour {
     bool isAlive = true;
     bool isDying = false;
 
+    [SerializeField]
+    Vector3 moveForward = Vector3.zero;
+
     Vector3 impactForce = Vector3.zero;
 
     // Use this for initialization
@@ -36,6 +39,7 @@ public class PlayerMovement : MonoBehaviour {
         charController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
 
+        
     }
 
     // Update is called once per frame
@@ -47,7 +51,7 @@ public class PlayerMovement : MonoBehaviour {
         float moveHorizontalPre = moveHorizontal;
         float moveVertical = 0f;
 
-        
+        moveForward = transform.forward;
 
         // Fell to the death
         if (transform.position.y < -2f || isDying)
@@ -80,6 +84,15 @@ public class PlayerMovement : MonoBehaviour {
         if (Mathf.Abs(moveHorizontal - currentMoveHorizontal) > 0.01f)
         {
             currentMoveHorizontal = Mathf.Lerp(currentMoveHorizontal, moveHorizontal, Time.deltaTime * speed);
+        }
+
+        // TODO rotate
+        if (moveHorizontal == 1f && this.transform.forward != Vector3.forward)
+        {
+            this.transform.SetPositionAndRotation(transform.position, Quaternion.Euler(0, 90, 0));
+        } else if (moveHorizontal == -1f && this.transform.forward != -Vector3.forward)
+        {
+            this.transform.SetPositionAndRotation(transform.position, Quaternion.Euler(0, -90, 0));
         }
 
         if (charController.isGrounded)
@@ -126,7 +139,7 @@ public class PlayerMovement : MonoBehaviour {
 
         charController.Move(moveDirection * Time.deltaTime);
 
-        animator.SetFloat("MoveSpeed", currentMoveHorizontal);
+        animator.SetFloat("MoveSpeed", Mathf.Abs(currentMoveHorizontal));
 
     }
 
