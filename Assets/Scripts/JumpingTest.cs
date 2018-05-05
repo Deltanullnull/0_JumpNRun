@@ -7,7 +7,9 @@ public class JumpingTest : MonoBehaviour
 
     Rigidbody rigidBody;
     CapsuleCollider capsuleCollider;
+    Animator animator;
 
+    [SerializeField]
     private bool inAir = true;
     
     public float jumpSpeed;
@@ -24,6 +26,7 @@ public class JumpingTest : MonoBehaviour
     {
         rigidBody = GetComponent<Rigidbody>();
         capsuleCollider = GetComponent<CapsuleCollider>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -45,6 +48,8 @@ public class JumpingTest : MonoBehaviour
         }
 
         moveDirection.x = currentMoveHorizontal * speed / 2f;
+
+        //animator.SetFloat("MoveSpeed", Mathf.Abs(currentMoveHorizontal));
     }
 
     // Update is called once per frame
@@ -54,14 +59,20 @@ public class JumpingTest : MonoBehaviour
         {
             if (inAir) // Just landed
             {
+                animator.SetBool("Grounded", true);
+
                 inAir = false;
             }
             
         }
         else
         {
-            
-            inAir = true;
+            if (!inAir)
+            {
+                //animator.SetBool("Grounded", false);
+
+                inAir = true;
+            }
         }
 
         if (Input.GetKey(KeyCode.Space))
@@ -91,7 +102,9 @@ public class JumpingTest : MonoBehaviour
     {
         if (!inAir)
         {
-            rigidBody.velocity = new Vector3(0, jumpSpeed / 5f, 0);   
+            rigidBody.velocity = new Vector3(0, jumpSpeed / 5f, 0);
+
+            animator.SetBool("Grounded", false);
         }
 
         inAir = true;

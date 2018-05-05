@@ -36,9 +36,6 @@ public class PlayerBehaviour : MonoBehaviour {
     int remainingJumpTime = jumpMax;
 
     [SerializeField]
-    Vector3 moveForward = Vector3.zero;
-
-    [SerializeField]
     Vector3 currentForce = Vector3.zero;
 
     Vector3 impactForce = Vector3.zero;
@@ -59,15 +56,6 @@ public class PlayerBehaviour : MonoBehaviour {
         if (!isAlive)
             return;
 
-        //Ray ray = new Ray(transform.position + capsuleCollider.center, -Vector3.up);
-
-        //Debug.DrawRay(ray.origin, ray.direction * 10, Color.green);
-
-        float moveHorizontalPre = moveHorizontal;
-        float moveVertical = 0f;
-
-        moveForward = transform.forward;
-
         // Fell to the death
         if (transform.position.y < -2f || isDying)
         {
@@ -76,16 +64,13 @@ public class PlayerBehaviour : MonoBehaviour {
         }
 
         
-        //else
-        {
-            //impactForce = Vector3.zero;
-            if (Input.GetKey(KeyCode.A))
-                moveHorizontal = -1f;
-            else if (Input.GetKey(KeyCode.D))
-                moveHorizontal = 1f;
-            else
-                moveHorizontal = 0f;
-        }
+        if (Input.GetKey(KeyCode.A))
+            moveHorizontal = -1f;
+        else if (Input.GetKey(KeyCode.D))
+            moveHorizontal = 1f;
+        else
+            moveHorizontal = 0f;
+     
 
         if (Mathf.Abs(moveHorizontal - currentMoveHorizontal) > 0.01f)
         {
@@ -97,14 +82,32 @@ public class PlayerBehaviour : MonoBehaviour {
         }
 
         // TODO rotate
-        if (moveHorizontal == 1f && this.transform.forward != Vector3.forward)
+        /*if (moveHorizontal == 1f && this.transform.forward != Vector3.forward)
         {
             this.transform.SetPositionAndRotation(transform.position, Quaternion.Euler(0, 90, 0));
         }
         else if (moveHorizontal == -1f && this.transform.forward != -Vector3.forward)
         {
             this.transform.SetPositionAndRotation(transform.position, Quaternion.Euler(0, -90, 0));
-        }
+        }*/
+
+        
+
+        /*if (killedEnemy)
+            JumpAfterKill();*/
+
+        moveDirection.x = currentMoveHorizontal * speed / 2f;
+        
+        animator.SetFloat("MoveSpeed", Mathf.Abs(currentMoveHorizontal));
+
+    }
+
+    
+    
+
+    void FixedUpdate()
+    {
+        currentForce = rigidBody.velocity;
 
         if (IsGrounded())
         {
@@ -118,36 +121,13 @@ public class PlayerBehaviour : MonoBehaviour {
                 
                 Land();
             }
-
-         
         }
         else
         {
-
-
             animator.SetBool("Grounded", false);
 
             inAir = true;
         }
-
-        if (killedEnemy)
-            JumpAfterKill();
-
-        moveDirection.x = currentMoveHorizontal * speed / 2f;
-
-      
-        //charController.Move(moveDirection * Time.deltaTime);
-
-        animator.SetFloat("MoveSpeed", Mathf.Abs(currentMoveHorizontal));
-
-    }
-
-    
-    
-
-    void FixedUpdate()
-    {
-        currentForce = rigidBody.velocity;
 
         if (wasHit)
         {
@@ -213,11 +193,10 @@ public class PlayerBehaviour : MonoBehaviour {
         
         Ray ray = new Ray(transform.position + capsuleCollider.center, -Vector3.up);
 
-        //Debug.DrawRay(ray.origin, ray.direction * 10f, Color.green);
 
         if (Physics.Raycast(ray, out hitInfo, 10f/*, LayerMask.GetMask("Platform")*/))
         {
-            return hitInfo.distance <= capsuleCollider.height / 2 + 0.01f;
+            return hitInfo.distance <= capsuleCollider.height / 2 + 0.001f;
         }
 
         return false;
@@ -281,19 +260,9 @@ public class PlayerBehaviour : MonoBehaviour {
         DestroyImmediate(gameObject);
     }
 
-    void Knockback()
-    {
-        Debug.Log("Knockback");
-
-        //rigidBody.AddForce(impactForce, ForceMode.Impulse);
-
-        //charController.Move(impactForce * Time.deltaTime);
-
-        //impactForce = Vector3.Lerp(impactForce, Vector3.zero, 5 * Time.deltaTime);
-    }
 
 
-    private void OnCollisionEnter(Collision collision)
+   /* private void OnCollisionEnter(Collision collision)
     {
         
 
@@ -348,7 +317,7 @@ public class PlayerBehaviour : MonoBehaviour {
             // TODO kill enemy
             KillEnemy(other.gameObject);
         }
-    }
+    }*/
 
 
     void KillEnemy(GameObject enemy)
