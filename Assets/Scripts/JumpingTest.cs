@@ -49,7 +49,7 @@ public class JumpingTest : MonoBehaviour
 
         moveDirection.x = currentMoveHorizontal * speed / 2f;
 
-        //animator.SetFloat("MoveSpeed", Mathf.Abs(currentMoveHorizontal));
+        animator.SetFloat("MoveSpeed", Mathf.Abs(currentMoveHorizontal));
     }
 
     // Update is called once per frame
@@ -69,7 +69,7 @@ public class JumpingTest : MonoBehaviour
         {
             if (!inAir)
             {
-                //animator.SetBool("Grounded", false);
+                animator.SetBool("Grounded", false);
 
                 inAir = true;
             }

@@ -81,15 +81,15 @@ public class PlayerBehaviour : MonoBehaviour {
             currentMoveHorizontal = moveHorizontal;
         }
 
-        // TODO rotate
-        /*if (moveHorizontal == 1f && this.transform.forward != Vector3.forward)
+        // rotate
+        if (moveHorizontal == 1f && this.transform.forward != Vector3.forward)
         {
             this.transform.SetPositionAndRotation(transform.position, Quaternion.Euler(0, 90, 0));
         }
         else if (moveHorizontal == -1f && this.transform.forward != -Vector3.forward)
         {
             this.transform.SetPositionAndRotation(transform.position, Quaternion.Euler(0, -90, 0));
-        }*/
+        }
 
         
 
@@ -194,7 +194,7 @@ public class PlayerBehaviour : MonoBehaviour {
         Ray ray = new Ray(transform.position + capsuleCollider.center, -Vector3.up);
 
 
-        if (Physics.Raycast(ray, out hitInfo, 10f/*, LayerMask.GetMask("Platform")*/))
+        if (Physics.Raycast(ray, out hitInfo, 10f))
         {
             return hitInfo.distance <= capsuleCollider.height / 2 + 0.001f;
         }
