@@ -474,6 +474,7 @@ GameObject:
   - component: {fileID: 54662991852988180}
   - component: {fileID: 136792439943582732}
   - component: {fileID: 114983252938219928}
+  - component: {fileID: 114540559229758338}
   m_Layer: 0
   m_Name: Player_New
   m_TagString: Player
@@ -1206,11 +1207,25 @@ Animator:
   m_Controller: {fileID: 9100000, guid: f297797635a2b7445ad2ea55cec7353b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114540559229758338
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1780102035550778}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51bf88fbc580f0a419f1398f0cc1e67e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inAir: 1
+  jumpSpeed: 30
+  speed: 6
 --- !u!114 &114983252938219928
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1224,9 +1239,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 3
   speed: 6
-  jumpSpeed: 300
+  jumpSpeed: 30
   gravity: 9.8
-  moveForward: {x: 0, y: 0, z: 0}
   currentForce: {x: 0, y: 0, z: 0}
 --- !u!136 &136792439943582732
 CapsuleCollider:
@@ -1240,7 +1254,7 @@ CapsuleCollider:
   m_Radius: 0.23
   m_Height: 1.04
   m_Direction: 1
-  m_Center: {x: 0, y: 0.54, z: 0}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!137 &137729180113601366
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
