@@ -29,6 +29,12 @@ public class PlayerBehaviour : MonoBehaviour {
     bool isAlive = true;
     bool isDying = false;
 
+    bool wasHit = false;
+    bool knockbacking = false;
+
+    const int jumpMax = 10;
+    int remainingJumpTime = jumpMax;
+
     [SerializeField]
     Vector3 moveForward = Vector3.zero;
 
@@ -109,18 +115,11 @@ public class PlayerBehaviour : MonoBehaviour {
 
 
                 inAir = false;
-
-                //moveDirection = new Vector3(moveHorizontal, 0, 0);
-
-
+                
+                Land();
             }
 
-            moveDirection = Vector3.zero;
-
-            //moveDirection = new Vector3(currentMoveHorizontal, 0, 0) * speed / 2f;
-
-            
-
+         
         }
         else
         {
@@ -132,22 +131,18 @@ public class PlayerBehaviour : MonoBehaviour {
         }
 
         if (killedEnemy)
-            Jump();
+            JumpAfterKill();
 
         moveDirection.x = currentMoveHorizontal * speed / 2f;
 
-        //moveDirection.y -= gravity * Time.deltaTime;
-
-        
-
+      
         //charController.Move(moveDirection * Time.deltaTime);
 
         animator.SetFloat("MoveSpeed", Mathf.Abs(currentMoveHorizontal));
 
     }
 
-    bool wasHit = false;
-    bool knockbacking = false;
+    
     
 
     void FixedUpdate()
@@ -169,6 +164,8 @@ public class PlayerBehaviour : MonoBehaviour {
             {
                 Debug.Log("Adding force");
 
+                
+
                 rigidBody.AddForce(new Vector3(-20, 0, 0).normalized * 100f, ForceMode.Acceleration);
 
                 return;
@@ -183,13 +180,26 @@ public class PlayerBehaviour : MonoBehaviour {
             }
         }
 
-        
-        
-        
+
+
+
         if (Input.GetKey(KeyCode.Space) && !killedEnemy)
         {
             Jump();
 
+            /*if (inAir)
+            {
+                //Jump();
+            }
+            else if (IsGrounded())
+            {
+                JumpStart();
+            }*/
+        }
+        else
+        {
+            if (inAir)
+                remainingJumpTime = 0;
         }
         
 
@@ -203,7 +213,7 @@ public class PlayerBehaviour : MonoBehaviour {
         
         Ray ray = new Ray(transform.position + capsuleCollider.center, -Vector3.up);
 
-        Debug.DrawRay(ray.origin, ray.direction * 10f, Color.green);
+        //Debug.DrawRay(ray.origin, ray.direction * 10f, Color.green);
 
         if (Physics.Raycast(ray, out hitInfo, 10f/*, LayerMask.GetMask("Platform")*/))
         {
@@ -215,15 +225,51 @@ public class PlayerBehaviour : MonoBehaviour {
 
     void Jump()
     {
-        killedEnemy = false;
+        if (remainingJumpTime > 0 && !inAir)
+        {
+            //if (remainingJumpTime == jumpMax)
+            
+            Debug.Log("Start jump with current vel: " + rigidBody.velocity.y + " and remaining time " + remainingJumpTime);
 
-        Debug.Log("Jump");
 
-        rigidBody.AddForce(new Vector3(0, jumpSpeed, 0));
+            rigidBody.velocity = new Vector3(0, jumpSpeed / 5f, 0);
 
-        //moveDirection.y = jumpSpeed;
+            remainingJumpTime--;
+        }
+        
+        inAir = true;
+    }
+
+    void JumpStart()
+    {
+        Debug.Log("Start jump with current vel: " + rigidBody.velocity );
+
+        //if (remainingJumpTime > 0)
+        {
+            
+
+            rigidBody.AddForce(new Vector3(0, jumpSpeed / 5f, 0), ForceMode.Impulse);
+
+            remainingJumpTime--;
+        }
 
         inAir = true;
+    }
+
+    void JumpAfterKill()
+    {
+        killedEnemy = false;
+
+        rigidBody.AddForce(new Vector3(0, jumpSpeed / 5f, 0), ForceMode.Impulse);
+
+        inAir = true;
+    }
+
+    void Land()
+    {
+        remainingJumpTime = jumpMax;
+
+        Debug.Log("Landed");
     }
 
     void Die()
@@ -279,12 +325,12 @@ public class PlayerBehaviour : MonoBehaviour {
                 //animator.SetBool("Grounded", false);
                 inAir = true;
             }
-            /*else if (hit.collider.GetType() == typeof(SphereCollider)) // Head
+            else if (collision.collider.GetType() == typeof(SphereCollider)) // Head
             {
                 Debug.Log("Kill");
 
-                KillEnemy(hit.gameObject);
-            }*/
+                KillEnemy(collision.gameObject);
+            }
 
 
         }
