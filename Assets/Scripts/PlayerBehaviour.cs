@@ -31,9 +31,10 @@ public class PlayerBehaviour : MonoBehaviour {
 
     bool wasHit = false;
     bool knockbacking = false;
-
-    const int jumpMax = 10;
-    int remainingJumpTime = jumpMax;
+    
+    [SerializeField]
+    int jumpMax = 10;
+    int remainingJumpTime;
 
     [SerializeField]
     Vector3 currentForce = Vector3.zero;
@@ -46,6 +47,8 @@ public class PlayerBehaviour : MonoBehaviour {
         rigidBody = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider>();
+
+        remainingJumpTime = jumpMax;
 
     }
 
@@ -165,16 +168,16 @@ public class PlayerBehaviour : MonoBehaviour {
 
         if (Input.GetKey(KeyCode.Space) && !killedEnemy)
         {
-            Jump();
+            //Jump();
 
-            /*if (inAir)
+            if (inAir)
             {
-                //Jump();
+                Jump();
             }
             else if (IsGrounded())
             {
                 JumpStart();
-            }*/
+            }
         }
         else
         {
@@ -204,14 +207,11 @@ public class PlayerBehaviour : MonoBehaviour {
 
     void Jump()
     {
-        if (remainingJumpTime > 0 && !inAir)
+        if (remainingJumpTime > 0)
         {
-            //if (remainingJumpTime == jumpMax)
-            
-            Debug.Log("Start jump with current vel: " + rigidBody.velocity.y + " and remaining time " + remainingJumpTime);
+            Debug.Log("Jumping: " + remainingJumpTime);
 
-
-            rigidBody.velocity = new Vector3(0, jumpSpeed / 5f, 0);
+            rigidBody.velocity = new Vector3(0, jumpSpeed, 0);
 
             remainingJumpTime--;
         }
@@ -223,11 +223,11 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         Debug.Log("Start jump with current vel: " + rigidBody.velocity );
 
-        //if (remainingJumpTime > 0)
+        if (remainingJumpTime > 0 && !inAir)
         {
-            
+            rigidBody.velocity = new Vector3(0, jumpSpeed, 0);
 
-            rigidBody.AddForce(new Vector3(0, jumpSpeed / 5f, 0), ForceMode.Impulse);
+            //rigidBody.AddForce(new Vector3(0, jumpSpeed / 5f, 0), ForceMode.Impulse);
 
             remainingJumpTime--;
         }

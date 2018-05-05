@@ -591,29 +591,20 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 54662991852988180, guid: bd1622f6fc4b64e4c961c99eae03155d,
+        type: 2}
+      propertyPath: m_Mass
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 114983252938219928, guid: bd1622f6fc4b64e4c961c99eae03155d,
         type: 2}
       propertyPath: jumpSpeed
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 136792439943582732, guid: bd1622f6fc4b64e4c961c99eae03155d,
-        type: 2}
-      propertyPath: m_Center.y
-      value: 0.5
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 114983252938219928, guid: bd1622f6fc4b64e4c961c99eae03155d,
         type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1780102035550778, guid: bd1622f6fc4b64e4c961c99eae03155d, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 95551382198095010, guid: bd1622f6fc4b64e4c961c99eae03155d,
-        type: 2}
-      propertyPath: m_ApplyRootMotion
-      value: 0
+      propertyPath: jumpMax
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bd1622f6fc4b64e4c961c99eae03155d, type: 2}
@@ -623,17 +614,3 @@ GameObject:
   m_PrefabParentObject: {fileID: 1780102035550778, guid: bd1622f6fc4b64e4c961c99eae03155d,
     type: 2}
   m_PrefabInternal: {fileID: 2127448814}
---- !u!114 &2127448816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2127448815}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51bf88fbc580f0a419f1398f0cc1e67e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inAir: 1
-  jumpSpeed: 30
-  speed: 6
