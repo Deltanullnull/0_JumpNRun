@@ -10,8 +10,11 @@ public class EnemyMovement : MonoBehaviour {
 
     public bool IsAlive;
 
-	// Use this for initialization
-	void Awake () {
+    public int Value;
+
+
+    // Use this for initialization
+    void Awake () {
 
         bodyCollider = GetComponent<BoxCollider>();
         headCollider = GetComponent<SphereCollider>();
@@ -31,5 +34,7 @@ public class EnemyMovement : MonoBehaviour {
         IsAlive = false;
 
         bodyCollider.enabled = headCollider.enabled = false;
+
+        ScoreManager.instance.IncreaseScore(Value);
     }
 }
