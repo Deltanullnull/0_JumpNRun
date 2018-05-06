@@ -95,10 +95,6 @@ public class PlayerBehaviour : MonoBehaviour {
         }
 
         
-
-        /*if (killedEnemy)
-            JumpAfterKill();*/
-
         moveDirection.x = currentMoveHorizontal * speed / 2f;
         
         animator.SetFloat("MoveSpeed", Mathf.Abs(currentMoveHorizontal));
@@ -137,8 +133,8 @@ public class PlayerBehaviour : MonoBehaviour {
             wasHit = false;
             animator.SetBool("WasHit", false);
             knockbacking = true;
-            rigidBody.AddForce(new Vector3(0, 20, 0).normalized * 100f);
-            rigidBody.AddForce(new Vector3(-20, 0, 0).normalized * 100f, ForceMode.Acceleration);
+
+            rigidBody.velocity = new Vector3(-2, 2, 0);
             return;
         }
         else
@@ -149,7 +145,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
                 
 
-                rigidBody.AddForce(new Vector3(-20, 0, 0).normalized * 100f, ForceMode.Acceleration);
+                //rigidBody.AddForce(new Vector3(-20, 0, 0).normalized * 100f, ForceMode.Acceleration);
 
                 return;
             }
@@ -166,11 +162,13 @@ public class PlayerBehaviour : MonoBehaviour {
 
 
 
-        if (Input.GetKey(KeyCode.Space) && !killedEnemy)
+        if (Input.GetKey(KeyCode.Space))
         {
-            //Jump();
-
-            if (inAir)
+            if (killedEnemy)
+            {
+                JumpAfterKill();
+            }
+            else if (inAir)
             {
                 Jump();
             }
@@ -178,6 +176,10 @@ public class PlayerBehaviour : MonoBehaviour {
             {
                 JumpStart();
             }
+        }
+        else if (killedEnemy)
+        {
+            JumpAfterKill();
         }
         else
         {
@@ -237,9 +239,18 @@ public class PlayerBehaviour : MonoBehaviour {
 
     void JumpAfterKill()
     {
+        Debug.Log("Jump after kill");
+
         killedEnemy = false;
 
-        rigidBody.AddForce(new Vector3(0, jumpSpeed / 5f, 0), ForceMode.Impulse);
+        remainingJumpTime = jumpMax;
+
+        //if (remainingJumpTime > 0 && !inAir)
+        {
+            rigidBody.velocity = new Vector3(0, jumpSpeed, 0);
+            
+            remainingJumpTime--;
+        }
 
         inAir = true;
     }
@@ -262,7 +273,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
 
 
-   /* private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
         
 
@@ -288,10 +299,6 @@ public class PlayerBehaviour : MonoBehaviour {
                 wasHit = true;
 
                 
-
-                //animator.SetBool("WasHit", false);
-
-                //animator.SetBool("Grounded", false);
                 inAir = true;
             }
             else if (collision.collider.GetType() == typeof(SphereCollider)) // Head
@@ -308,16 +315,18 @@ public class PlayerBehaviour : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Triggered");
 
-        if (other.tag == "Enemy")
+        if (other.tag == "Coin")
         {
-            Debug.Log("Collided with enemy");
+            // TODO add score
 
-            // TODO kill enemy
-            KillEnemy(other.gameObject);
+
+
+            // TODO remove coin
+
+            other.gameObject.GetComponent<CoinScript>().Collect();
         }
-    }*/
+    }
 
 
     void KillEnemy(GameObject enemy)
