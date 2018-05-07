@@ -25,6 +25,8 @@ public class PlayerBehaviour : MonoBehaviour {
     float moveHorizontal = 0f;
     float currentMoveHorizontal = 0f;
 
+    bool spacePressed = false;
+
     private bool killedEnemy = false;
     bool isAlive = true;
     bool isDying = false;
@@ -100,13 +102,14 @@ public class PlayerBehaviour : MonoBehaviour {
         animator.SetFloat("MoveSpeed", Mathf.Abs(currentMoveHorizontal));
 
     }
-
-    
-    
+ 
 
     void FixedUpdate()
     {
         currentForce = rigidBody.velocity;
+
+        bool sliding = false;
+        int wallDirection = 0;
 
         if (IsGrounded())
         {
@@ -123,6 +126,17 @@ public class PlayerBehaviour : MonoBehaviour {
         }
         else
         {
+            if (TouchingWall(out wallDirection))
+            {
+                Debug.Log("Sliding");
+
+                sliding = true;
+
+                
+                // TODO reduce falling speed
+                rigidBody.velocity = new Vector3(0, -0.5f, 0) * Time.deltaTime;
+            }
+
             animator.SetBool("Grounded", false);
 
             inAir = true;
@@ -160,7 +174,7 @@ public class PlayerBehaviour : MonoBehaviour {
         }
 
 
-
+        
 
         if (Input.GetKey(KeyCode.Space))
         {
@@ -168,7 +182,7 @@ public class PlayerBehaviour : MonoBehaviour {
             {
                 JumpAfterKill();
             }
-            else if (inAir)
+            else if (inAir && !sliding)
             {
                 Jump();
             }
@@ -176,20 +190,60 @@ public class PlayerBehaviour : MonoBehaviour {
             {
                 JumpStart();
             }
-        }
-        else if (killedEnemy)
-        {
-            JumpAfterKill();
+            else if (sliding)
+            {
+                WallJump(wallDirection);
+            }
         }
         else
         {
-            if (inAir)
-                remainingJumpTime = 0;
+            Debug.Log("Released");
+            
+            if (killedEnemy)
+            {
+                JumpAfterKill();
+            }
+            else
+            {
+                if (inAir)
+                    remainingJumpTime = 0;
+            }
         }
+
+        
         
 
-        rigidBody.MovePosition(transform.position + moveDirection * Time.deltaTime);
+        if (!sliding || (moveDirection.x * wallDirection < 0)) // TODO let go if moving opposite direction of wall
+            rigidBody.MovePosition(transform.position + moveDirection * Time.deltaTime);
         
+    }
+
+    bool TouchingWall(out int direction)
+    {
+        RaycastHit hitInfo;
+
+        direction = 0;
+
+        Ray ray = new Ray(transform.position + capsuleCollider.center, -Vector3.right);
+        
+        if (Physics.Raycast(ray, out hitInfo, 4f)) // check one side
+        {
+            direction = -1;
+
+            if (hitInfo.distance <= capsuleCollider.radius + 0.001f)
+                return true;
+        }
+
+        ray = new Ray(transform.position + capsuleCollider.center, Vector3.right);
+
+        if (Physics.Raycast(ray, out hitInfo, 4f)) // check another side
+        {
+            direction = 1;
+
+            return hitInfo.distance <= capsuleCollider.radius + 0.001f;
+        }
+        
+        return false;
     }
 
     bool IsGrounded()
@@ -217,6 +271,19 @@ public class PlayerBehaviour : MonoBehaviour {
 
             remainingJumpTime--;
         }
+        
+        inAir = true;
+    }
+
+    void WallJump(int wallDirection)
+    {
+        Debug.Log("Wall jump");
+
+        // TODO get direction of jump
+
+        rigidBody.velocity = new Vector3(-wallDirection * 3, jumpSpeed, 0);
+
+        remainingJumpTime = 0;
         
         inAir = true;
     }
