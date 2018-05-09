@@ -5,7 +5,8 @@ using UnityEngine;
 public class PlayerBehaviour : MonoBehaviour {
 
     Rigidbody rigidBody;
-    CapsuleCollider capsuleCollider;
+    //CapsuleCollider capsuleCollider;
+    BoxCollider capsuleCollider;
     Animator animator;
 
 
@@ -48,7 +49,7 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         rigidBody = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
-        capsuleCollider = GetComponent<CapsuleCollider>();
+        capsuleCollider = GetComponent<BoxCollider>();
 
         remainingJumpTime = jumpMax;
 
@@ -69,9 +70,9 @@ public class PlayerBehaviour : MonoBehaviour {
         }
 
         
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             moveHorizontal = -1f;
-        else if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
             moveHorizontal = 1f;
         else
             moveHorizontal = 0f;
@@ -174,9 +175,11 @@ public class PlayerBehaviour : MonoBehaviour {
         }
 
 
-        
+        // TODO Make sure we won't jump again unless we released the space button and press again
+        // if we hold space down, set spaceDown to true
+        // if spaceDown, we cannot reach JumpStart()
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space)) 
         {
             if (killedEnemy)
             {
@@ -186,14 +189,16 @@ public class PlayerBehaviour : MonoBehaviour {
             {
                 Jump();
             }
-            else if (IsGrounded())
+            else if (IsGrounded() && !spacePressed)
             {
                 JumpStart();
             }
-            else if (sliding)
+            else if (sliding && !spacePressed)
             {
                 WallJump(wallDirection);
             }
+
+            spacePressed = true;
         }
         else
         {
@@ -208,6 +213,8 @@ public class PlayerBehaviour : MonoBehaviour {
                 if (inAir)
                     remainingJumpTime = 0;
             }
+
+            spacePressed = false;
         }
 
         
@@ -230,7 +237,7 @@ public class PlayerBehaviour : MonoBehaviour {
         {
             direction = -1;
 
-            if (hitInfo.distance <= capsuleCollider.radius + 0.001f)
+            if (hitInfo.distance <= capsuleCollider.size.z / 2 + 0.001f)
                 return true;
         }
 
@@ -240,7 +247,7 @@ public class PlayerBehaviour : MonoBehaviour {
         {
             direction = 1;
 
-            return hitInfo.distance <= capsuleCollider.radius + 0.001f;
+            return hitInfo.distance <= capsuleCollider.size.z / 2 + 0.001f;
         }
         
         return false;
@@ -255,7 +262,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
         if (Physics.Raycast(ray, out hitInfo, 10f))
         {
-            return hitInfo.distance <= capsuleCollider.height / 2 + 0.001f;
+            return hitInfo.distance <= capsuleCollider.size.y / 2 + 0.001f;
         }
 
         return false;
