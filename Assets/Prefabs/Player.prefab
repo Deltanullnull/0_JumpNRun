@@ -384,6 +384,7 @@ GameObject:
   - component: {fileID: 136192487027300292}
   - component: {fileID: 114506787766609324}
   - component: {fileID: 114502395061132388}
+  - component: {fileID: 65640859455271192}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1059,7 +1060,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1694898630354736}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -2.86, y: 1.35, z: 3.4}
+  m_LocalPosition: {x: -2, y: 1.35, z: 3.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4311639099438866}
@@ -1195,6 +1196,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 0
+--- !u!65 &65640859455271192
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1694898630354736}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 1, z: 0.5}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!95 &95478916027914844
 Animator:
   serializedVersion: 3
@@ -1212,6 +1225,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114502395061132388
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1243,6 +1257,7 @@ MonoBehaviour:
   gravity: 9.8
   jumpMax: 20
   currentForce: {x: 0, y: 0, z: 0}
+  currentVelocity: {x: 0, y: 0, z: 0}
 --- !u!136 &136192487027300292
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -1251,7 +1266,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 1694898630354736}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.23
   m_Height: 1.04
   m_Direction: 1
@@ -1269,6 +1284,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 8d74c62051dcbe24eb59170e3cceb73e, type: 2}
   - {fileID: 2100000, guid: e639426dff5dcfa40bf254c0ffc5f841, type: 2}

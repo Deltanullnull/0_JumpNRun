@@ -8,6 +8,8 @@ public class EnemyMovement : MonoBehaviour {
 
     BoxCollider bodyCollider;
 
+    Rigidbody rigidBody;
+
     public bool IsAlive;
 
     public int Value;
@@ -18,6 +20,8 @@ public class EnemyMovement : MonoBehaviour {
 
         bodyCollider = GetComponent<BoxCollider>();
         headCollider = GetComponent<SphereCollider>();
+
+        rigidBody = GetComponent<Rigidbody>();
 
         IsAlive = true;
 	}
@@ -33,8 +37,32 @@ public class EnemyMovement : MonoBehaviour {
     {
         IsAlive = false;
 
-        bodyCollider.enabled = headCollider.enabled = false;
+        //rigidBody.isKinematic = false;
+
+        //bodyCollider.enabled = headCollider.enabled = false;
 
         ScoreManager.instance.IncreaseScore(Value);
+
+        // TODO start coroutine where enemy is being "flattened"
+
+        StartCoroutine("Squeeze");
+    }
+
+    IEnumerator Squeeze()
+    {
+        while (transform.localScale.y >= 0.1f)
+        {
+            Vector3 localScale = transform.localScale;
+
+            localScale.y *= 0.8f;
+
+            transform.localScale = localScale;
+
+            yield return null;
+        }
+
+        DestroyImmediate(gameObject);
+
+        yield return null;
     }
 }

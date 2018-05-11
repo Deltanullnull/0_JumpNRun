@@ -42,6 +42,9 @@ public class PlayerBehaviour : MonoBehaviour {
     [SerializeField]
     Vector3 currentForce = Vector3.zero;
 
+    [SerializeField]
+    Vector3 currentVelocity = Vector3.zero;
+
     Vector3 impactForce = Vector3.zero;
 
     // Use this for initialization
@@ -53,21 +56,27 @@ public class PlayerBehaviour : MonoBehaviour {
 
         remainingJumpTime = jumpMax;
 
+        
     }
 
     // Update is called once per frame
     void Update()
     {
 
+        
+        // Fell to the death
+
+        if (transform.position.y < -2f)
+        {
+            DestroyImmediate(this);
+            return;
+        }
+
         if (!isAlive)
             return;
 
-        // Fell to the death
-        if (transform.position.y < -2f || isDying)
-        {
-            Die();
-            return;
-        }
+
+        
 
         
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
@@ -107,7 +116,16 @@ public class PlayerBehaviour : MonoBehaviour {
 
     void FixedUpdate()
     {
-        currentForce = rigidBody.velocity;
+        if (!isAlive)
+            return;
+
+        if (isDying)
+        {
+            Die();
+            return;
+        }
+
+        currentVelocity = rigidBody.velocity;
 
         bool sliding = false;
         int wallDirection = 0;
@@ -154,23 +172,12 @@ public class PlayerBehaviour : MonoBehaviour {
         }
         else
         {
-            if (knockbacking && !IsGrounded())
+            if (knockbacking )
             {
-                Debug.Log("Adding force");
-
-                
-
-                //rigidBody.AddForce(new Vector3(-20, 0, 0).normalized * 100f, ForceMode.Acceleration);
-
-                return;
-            }
-            else if (knockbacking)
-            {
-                Debug.Log("Knockback over");
+                if (!IsGrounded())
+                    return;
 
                 knockbacking = false;
-
-                
             }
         }
 
@@ -202,7 +209,7 @@ public class PlayerBehaviour : MonoBehaviour {
         }
         else
         {
-            Debug.Log("Released");
+            //Debug.Log("Released");
             
             if (killedEnemy)
             {
@@ -272,7 +279,7 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         if (remainingJumpTime > 0)
         {
-            Debug.Log("Jumping: " + remainingJumpTime);
+            //Debug.Log("Jumping: " + remainingJumpTime);
 
             rigidBody.velocity = new Vector3(0, jumpSpeed, 0);
 
@@ -288,7 +295,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
         // TODO get direction of jump
 
-        rigidBody.velocity = new Vector3(-wallDirection * 3, jumpSpeed, 0);
+        rigidBody.velocity = new Vector3(-wallDirection * 5, jumpSpeed * 1.5f, 0);
 
         remainingJumpTime = 0;
         
@@ -297,7 +304,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
     void JumpStart()
     {
-        Debug.Log("Start jump with current vel: " + rigidBody.velocity );
+        //Debug.Log("Start jump with current vel: " + rigidBody.velocity );
 
         if (remainingJumpTime > 0 && !inAir)
         {
@@ -333,16 +340,41 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         remainingJumpTime = jumpMax;
 
-        Debug.Log("Landed");
+        //Debug.Log("Landed");
     }
 
     void Die()
     {
-        Debug.Log("I just died in your arms tonight");
+        
+        // TODO make character spin around and throw in the air; deactivate collider
 
         isAlive = false;
 
-        DestroyImmediate(gameObject);
+        isDying = false;
+
+        
+
+        capsuleCollider.enabled = false;
+
+        rigidBody.constraints = RigidbodyConstraints.None;
+
+
+        rigidBody.velocity = new Vector3(0, 10f, -1f);
+        //DestroyImmediate(gameObject);
+
+        StartCoroutine("SpinAround");
+    }
+
+    IEnumerator SpinAround()
+    {
+        while (true)
+        {
+            transform.Rotate(Vector3.back, 10f * Time.deltaTime);
+
+            //transform.Translate(Vector3.forward * 0.1f * Time.deltaTime);
+
+            yield return null;
+        }
     }
 
 
