@@ -68,7 +68,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
         if (transform.position.y < -2f)
         {
-            DestroyImmediate(this);
+            DestroyImmediate(gameObject);
             return;
         }
 
@@ -253,7 +253,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
         Ray ray = new Ray(transform.position + capsuleCollider.center, -Vector3.right);
         
-        if (Physics.Raycast(ray, out hitInfo, 4f)) // check one side
+        if (Physics.Raycast(ray, out hitInfo, 4f, LayerMask.GetMask("Platform"))) // check one side
         {
             direction = -1;
 
@@ -263,7 +263,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
         ray = new Ray(transform.position + capsuleCollider.center, Vector3.right);
 
-        if (Physics.Raycast(ray, out hitInfo, 4f)) // check another side
+        if (Physics.Raycast(ray, out hitInfo, 4f, LayerMask.GetMask("Platform"))) // check another side
         {
             direction = 1;
 
@@ -279,6 +279,10 @@ public class PlayerBehaviour : MonoBehaviour {
         
         Ray ray = new Ray(transform.position + capsuleCollider.center, -Vector3.up);
 
+        if (Physics.Raycast(ray, out hitInfo, 10f, LayerMask.GetMask("Checkpoint")))
+        {
+            return false;
+        }
 
         if (Physics.Raycast(ray, out hitInfo, 10f))
         {
@@ -394,8 +398,6 @@ public class PlayerBehaviour : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        
-
         if (collision.gameObject.tag == "Platform")
             return;
 
@@ -437,13 +439,13 @@ public class PlayerBehaviour : MonoBehaviour {
 
         if (other.tag == "Coin")
         {
-            // TODO add score
-
-
-
-            // TODO remove coin
-
             other.gameObject.GetComponent<CoinScript>().Collect();
+        }
+        
+        if (other.tag == "Checkpoint")
+        {
+            // TODO trigger checkpoint
+            GameManagerScript.Instance.PassCheckpoint(other.gameObject);
         }
     }
 
