@@ -20,10 +20,11 @@ public class CameraMovement : MonoBehaviour {
 
         if (playerObject != null)
         {
-            Vector3 camPosition = new Vector2
+            Vector3 camPosition = new Vector3
             {
                 x = Mathf.Max(0, playerObject.transform.position.x),
-                y = Mathf.Max(1, playerObject.transform.position.y)
+                y = Mathf.Max(1, playerObject.transform.position.y),
+                z = transform.position.z
             };
 
             transform.SetPositionAndRotation(camPosition, transform.rotation);
