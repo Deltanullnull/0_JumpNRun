@@ -87,6 +87,7 @@ public class PlayerBehaviour : MonoBehaviour {
             moveHorizontal = 0f;
      
 
+        // TODO set currentMoveHorizontal instantly to zero when sliding
         if (Mathf.Abs(moveHorizontal - currentMoveHorizontal) > 0.01f)
         {
             currentMoveHorizontal = Mathf.Lerp(currentMoveHorizontal, moveHorizontal, Time.deltaTime * speed);
@@ -95,6 +96,8 @@ public class PlayerBehaviour : MonoBehaviour {
         {
             currentMoveHorizontal = moveHorizontal;
         }
+
+        
 
         // rotate
         if (moveHorizontal == 1f && this.transform.forward != Vector3.forward)
@@ -151,7 +154,9 @@ public class PlayerBehaviour : MonoBehaviour {
 
                 sliding = true;
 
-                
+                currentMoveHorizontal = 0;
+
+
                 // TODO reduce falling speed
                 rigidBody.velocity = new Vector3(0, -0.5f, 0) * Time.deltaTime;
             }
@@ -209,7 +214,6 @@ public class PlayerBehaviour : MonoBehaviour {
         }
         else
         {
-            //Debug.Log("Released");
             
             if (killedEnemy)
             {
@@ -224,12 +228,21 @@ public class PlayerBehaviour : MonoBehaviour {
             spacePressed = false;
         }
 
-        
-        
+        bool releaseWall = (sliding && moveDirection.x * wallDirection < 0);
 
-        if (!sliding || (moveDirection.x * wallDirection < 0)) // TODO let go if moving opposite direction of wall
+        if (releaseWall)
+        {
+            Debug.Log("Let go of wall");
+            Debug.Log("Move direction: " + moveDirection.x);
+            Debug.Log("Wall direction: " + wallDirection);
+        }
+
+        if (!sliding || releaseWall) // TODO let go if moving opposite direction of wall
+        {
+            
+
             rigidBody.MovePosition(transform.position + moveDirection * Time.deltaTime);
-        
+        }
     }
 
     bool TouchingWall(out int direction)
