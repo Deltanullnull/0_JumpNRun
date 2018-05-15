@@ -5,8 +5,7 @@ using UnityEngine;
 public class CameraMovement : MonoBehaviour {
 
 
-    [SerializeField]
-    GameObject playerObject;
+    public GameObject playerObject;
 
 	// Use this for initialization
 	void Start () {

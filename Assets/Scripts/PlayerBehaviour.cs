@@ -68,6 +68,8 @@ public class PlayerBehaviour : MonoBehaviour {
 
         if (transform.position.y < -2f)
         {
+            GameManagerScript.Instance.playerDied = true;
+
             DestroyImmediate(gameObject);
             return;
         }

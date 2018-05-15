@@ -7,6 +7,8 @@ public class GameManagerScript : MonoBehaviour
 
     public static GameManagerScript Instance = null;
 
+    public bool playerDied = false;
+
     GameObject lastCheckpoint;
 
 	// Use this for initialization
@@ -21,6 +23,8 @@ public class GameManagerScript : MonoBehaviour
         {
             Debug.Log("Checkpoint passed");
             lastCheckpoint = checkPoint;
+
+            lastCheckpoint.GetComponent<CheckpointScript>().Activate();
         }
     }
 
@@ -28,11 +32,20 @@ public class GameManagerScript : MonoBehaviour
     {
         // TODO respawn player at last checkpoint
 
+        GameObject player = Instantiate(Resources.Load("Player")) as GameObject;
+
+        player.transform.position = lastCheckpoint.transform.position;
+
+        Camera.main.GetComponent<CameraMovement>().playerObject = player;
 
     }
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (playerDied)
+        {
+            playerDied = false;
+            LoadAtCheckpoint();
+        }
 	}
 }
