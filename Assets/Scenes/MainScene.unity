@@ -687,24 +687,29 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 54407427450263788, guid: 466b900737e0f5140a9337b692616f1e,
-        type: 2}
-      propertyPath: m_IsKinematic
-      value: 0
+    - target: {fileID: 4793812566017714, guid: 466b900737e0f5140a9337b692616f1e, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -25.247562
       objectReference: {fileID: 0}
-    - target: {fileID: 54407427450263788, guid: 466b900737e0f5140a9337b692616f1e,
-        type: 2}
-      propertyPath: m_Constraints
-      value: 120
+    - target: {fileID: 4793812566017714, guid: 466b900737e0f5140a9337b692616f1e, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: 95572076745018740, guid: 466b900737e0f5140a9337b692616f1e,
-        type: 2}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 5a5db2c1aa341744387942c8858df5ff, type: 2}
+    - target: {fileID: 4793812566017714, guid: 466b900737e0f5140a9337b692616f1e, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
     - target: {fileID: 1013871632076184, guid: 466b900737e0f5140a9337b692616f1e, type: 2}
-      propertyPath: m_Name
-      value: Box001
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1064117223978182, guid: 466b900737e0f5140a9337b692616f1e, type: 2}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652314657090728, guid: 466b900737e0f5140a9337b692616f1e, type: 2}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 466b900737e0f5140a9337b692616f1e, type: 2}

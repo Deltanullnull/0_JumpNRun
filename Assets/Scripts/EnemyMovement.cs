@@ -38,13 +38,13 @@ public class EnemyMovement : MonoBehaviour {
 	    if (transform.position.y < -2)
             DestroyImmediate(gameObject);
 
-        // TODO check, if ridge is near, turn direction
+        // check, if ridge is near, turn direction
         // Raycast from offset downwards
 
         Ray rayDown = new Ray(rigidBody.transform.position + new Vector3(moveDirection, 0, 0) * Time.deltaTime, Vector3.down);
         RaycastHit hitInfo;
 
-        if (Physics.Raycast(rayDown, out hitInfo, 5f))
+        if (Physics.Raycast(rayDown, out hitInfo, 5f, LayerMask.GetMask("Platform")))
         {
             if (hitInfo.distance > bodyCollider.size.y / 2)
                 moveDirection *= -1; 

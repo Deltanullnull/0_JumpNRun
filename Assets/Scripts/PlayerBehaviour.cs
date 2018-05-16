@@ -33,6 +33,11 @@ public class PlayerBehaviour : MonoBehaviour {
 
     bool wasHit = false;
     bool knockbacking = false;
+
+    int invicibleTime = 60;
+    int invicibleTimeRemaining = 0;
+
+    private int hitDirection = 0;
     
     [SerializeField]
     int jumpMax = 10;
@@ -61,7 +66,17 @@ public class PlayerBehaviour : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (invicibleTimeRemaining > 0)
+        {
+            // Turn off collider with enemy
 
+            Physics.IgnoreLayerCollision(10, 11, true);
+            invicibleTimeRemaining--;
+        }
+        else
+        {
+            Physics.IgnoreLayerCollision(10, 11, false);
+        }
         
         // Fell to the death
 
@@ -173,7 +188,10 @@ public class PlayerBehaviour : MonoBehaviour {
             animator.SetBool("WasHit", false);
             knockbacking = true;
 
-            rigidBody.velocity = new Vector3(-2, 2, 0);
+            invicibleTimeRemaining = invicibleTime;
+
+            // TODO hit from which direction?
+            rigidBody.velocity = new Vector3(-2 * hitDirection, 2, 0);
             return;
         }
         else
@@ -400,6 +418,20 @@ public class PlayerBehaviour : MonoBehaviour {
             if (collision.collider.GetType() == typeof(BoxCollider)) // Body
             {
                 Debug.Log("Ouch");
+
+                float contactPoint = transform.position.x - collision.contacts[0].point.x;
+
+                if (contactPoint > 0)
+                    hitDirection = -1;
+                else
+                    hitDirection = 1;
+
+                foreach (ContactPoint point in collision.contacts)
+                {
+                    Debug.Log("Point: " + (transform.position.x - point.point.x) + ", " + point.point.y);
+
+                    
+                }
 
                 animator.SetBool("WasHit", true);
 

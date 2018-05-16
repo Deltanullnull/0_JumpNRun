@@ -34,7 +34,11 @@ public class GameManagerScript : MonoBehaviour
 
         GameObject player = Instantiate(Resources.Load("Player")) as GameObject;
 
-        player.transform.position = lastCheckpoint.transform.position;
+        if (lastCheckpoint != null)
+        {
+            player.transform.position = lastCheckpoint.transform.position;
+        }
+        
 
         Camera.main.GetComponent<CameraMovement>().playerObject = player;
 
