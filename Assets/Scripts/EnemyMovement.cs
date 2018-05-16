@@ -10,9 +10,13 @@ public class EnemyMovement : MonoBehaviour {
 
     Rigidbody rigidBody;
 
+    Animator animator;
+
     public bool IsAlive;
 
     public int Value;
+
+    float moveDirection = -1f;
 
 
     // Use this for initialization
@@ -23,6 +27,8 @@ public class EnemyMovement : MonoBehaviour {
 
         rigidBody = GetComponent<Rigidbody>();
 
+        animator = GetComponent<Animator>();
+
         IsAlive = true;
 	}
 	
@@ -31,6 +37,33 @@ public class EnemyMovement : MonoBehaviour {
     {
 	    if (transform.position.y < -2)
             DestroyImmediate(gameObject);
+
+        // TODO check, if ridge is near, turn direction
+        // Raycast from offset downwards
+
+        Ray rayDown = new Ray(rigidBody.transform.position + new Vector3(moveDirection, 0, 0) * Time.deltaTime, Vector3.down);
+        RaycastHit hitInfo;
+
+        if (Physics.Raycast(rayDown, out hitInfo, 5f))
+        {
+            if (hitInfo.distance > bodyCollider.size.y / 2)
+                moveDirection *= -1; 
+        }
+        else
+        {
+            moveDirection *= -1;
+        }
+        
+
+    }
+
+    private void FixedUpdate()
+    {
+        if (!IsAlive)
+            return;
+
+        // TODO move back and forth
+        rigidBody.MovePosition(rigidBody.transform.position + new Vector3(moveDirection, 0, 0) * Time.deltaTime);
     }
 
     public void Die()

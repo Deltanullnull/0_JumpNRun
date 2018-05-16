@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerBehaviour : MonoBehaviour {
 
     Rigidbody rigidBody;
-    //CapsuleCollider capsuleCollider;
     BoxCollider capsuleCollider;
     Animator animator;
 
@@ -159,7 +158,7 @@ public class PlayerBehaviour : MonoBehaviour {
                 currentMoveHorizontal = 0;
 
 
-                // TODO reduce falling speed
+                // reduce falling speed
                 rigidBody.velocity = new Vector3(0, -0.5f, 0) * Time.deltaTime;
             }
 
@@ -231,13 +230,6 @@ public class PlayerBehaviour : MonoBehaviour {
         }
 
         bool releaseWall = (sliding && moveDirection.x * wallDirection < 0);
-
-        if (releaseWall)
-        {
-            Debug.Log("Let go of wall");
-            Debug.Log("Move direction: " + moveDirection.x);
-            Debug.Log("Wall direction: " + wallDirection);
-        }
 
         if (!sliding || releaseWall) // TODO let go if moving opposite direction of wall
         {

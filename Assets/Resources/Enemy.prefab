@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33551449984223556}
   - component: {fileID: 23425918420703752}
   m_Layer: 0
-  m_Name: Body
+  m_Name: Box001
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,7 +72,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1652314657090728}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.702, y: 0.30654, z: 3.4}
+  m_LocalPosition: {x: -0.702, y: 0.30654, z: 0}
   m_LocalScale: {x: 0.47757375, y: 0.47757378, z: 0.47757378}
   m_Children:
   - {fileID: 4793812566017714}
@@ -213,7 +213,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!65 &65914498321528926
 BoxCollider:
@@ -236,7 +236,7 @@ Animator:
   m_GameObject: {fileID: 1652314657090728}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 9a20f4416ef72c2469c09edd512d3d16, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5a5db2c1aa341744387942c8858df5ff, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
