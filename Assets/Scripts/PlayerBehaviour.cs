@@ -5,9 +5,9 @@ using UnityEngine;
 public class PlayerBehaviour : MonoBehaviour {
 
     Rigidbody rigidBody;
-    BoxCollider capsuleCollider;
+    BoxCollider playerCollider;
+    BoxCollider footCollider;
     Animator animator;
-
 
     private bool falling = false;
     private bool inAir = true;
@@ -56,7 +56,21 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         rigidBody = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
-        capsuleCollider = GetComponent<BoxCollider>();
+        playerCollider = GetComponent<BoxCollider>();
+
+        var colliders = GetComponents<BoxCollider>();
+
+        foreach (BoxCollider coll in colliders)
+        {
+            if (coll.isTrigger)
+            {
+                footCollider = coll;
+            }
+            else
+            {
+                playerCollider = coll;
+            }
+        }
 
         remainingJumpTime = jumpMax;
 
@@ -263,23 +277,23 @@ public class PlayerBehaviour : MonoBehaviour {
 
         direction = 0;
 
-        Ray ray = new Ray(transform.position + capsuleCollider.center, -Vector3.right);
+        Ray ray = new Ray(transform.position + playerCollider.center, -Vector3.right);
         
         if (Physics.Raycast(ray, out hitInfo, 4f, LayerMask.GetMask("Platform"))) // check one side
         {
             direction = -1;
 
-            if (hitInfo.distance <= capsuleCollider.size.z / 2 + 0.001f)
+            if (hitInfo.distance <= playerCollider.size.z / 2 + 0.001f)
                 return true;
         }
 
-        ray = new Ray(transform.position + capsuleCollider.center, Vector3.right);
+        ray = new Ray(transform.position + playerCollider.center, Vector3.right);
 
         if (Physics.Raycast(ray, out hitInfo, 4f, LayerMask.GetMask("Platform"))) // check another side
         {
             direction = 1;
 
-            return hitInfo.distance <= capsuleCollider.size.z / 2 + 0.001f;
+            return hitInfo.distance <= playerCollider.size.z / 2 + 0.001f;
         }
         
         return false;
@@ -289,16 +303,23 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         RaycastHit hitInfo;
         
-        Ray ray = new Ray(transform.position + capsuleCollider.center, -Vector3.up);
+        Ray ray = new Ray(transform.position + playerCollider.center, -Vector3.up);
 
         if (Physics.Raycast(ray, out hitInfo, 10f, LayerMask.GetMask("Checkpoint")))
         {
             return false;
         }
 
-        if (Physics.Raycast(ray, out hitInfo, 10f))
+        int ignoreLayer = ~(1 << 10);
+
+        if (Physics.Raycast(ray, out hitInfo, 10f, ignoreLayer))
         {
-            return hitInfo.distance <= capsuleCollider.size.y / 2 + 0.001f;
+            if (hitInfo.collider != footCollider)
+            {
+                return hitInfo.distance <= playerCollider.size.y / 2 + 0.001f;
+            }
+
+            
         }
 
         return false;
@@ -372,6 +393,8 @@ public class PlayerBehaviour : MonoBehaviour {
         //Debug.Log("Landed");
     }
 
+
+    
     void Die()
     {
         
@@ -383,7 +406,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
         
 
-        capsuleCollider.enabled = false;
+        playerCollider.enabled = false;
 
         rigidBody.constraints = RigidbodyConstraints.None;
 
@@ -462,7 +485,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-
+        
         if (other.tag == "Coin")
         {
             other.gameObject.GetComponent<CoinScript>().Collect();
