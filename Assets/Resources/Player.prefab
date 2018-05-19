@@ -381,10 +381,9 @@ GameObject:
   - component: {fileID: 4744250433923776}
   - component: {fileID: 95478916027914844}
   - component: {fileID: 54530559436118306}
-  - component: {fileID: 136192487027300292}
   - component: {fileID: 114506787766609324}
-  - component: {fileID: 114502395061132388}
   - component: {fileID: 65640859455271192}
+  - component: {fileID: 65851086744339304}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -1060,7 +1059,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1694898630354736}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -2.385, y: 1.425, z: -0}
+  m_LocalPosition: {x: -2.4, y: 1.73, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4311639099438866}
@@ -1208,6 +1207,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 1, z: 0.5}
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!65 &65851086744339304
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1694898630354736}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 0.4, y: 0.1, z: 0.4}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &95478916027914844
 Animator:
   serializedVersion: 3
@@ -1226,20 +1237,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &114502395061132388
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1694898630354736}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51bf88fbc580f0a419f1398f0cc1e67e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inAir: 1
-  jumpSpeed: 30
-  speed: 6
 --- !u!114 &114506787766609324
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1251,26 +1248,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aadd967933de47448ed929e960879b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 3
+  health: 0
+  maxHealth: 3
   speed: 6
   jumpSpeed: 5
   gravity: 9.8
   jumpMax: 20
   currentForce: {x: 0, y: 0, z: 0}
   currentVelocity: {x: 0, y: 0, z: 0}
---- !u!136 &136192487027300292
-CapsuleCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1694898630354736}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  m_Radius: 0.23
-  m_Height: 1.04
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!137 &137932996688169188
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

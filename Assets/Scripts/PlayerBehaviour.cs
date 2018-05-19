@@ -17,6 +17,9 @@ public class PlayerBehaviour : MonoBehaviour {
     [SerializeField]
     private int health;
 
+    [SerializeField]
+    private int maxHealth;
+
     public float speed = 6.0F;
     public float jumpSpeed = 8.0F;
     public float gravity = 20.0F;
@@ -65,6 +68,7 @@ public class PlayerBehaviour : MonoBehaviour {
             if (coll.isTrigger)
             {
                 footCollider = coll;
+                
             }
             else
             {
@@ -75,6 +79,17 @@ public class PlayerBehaviour : MonoBehaviour {
         remainingJumpTime = jumpMax;
 
         
+
+        
+    }
+
+    private void Start()
+    {
+        health = maxHealth;
+
+        LifeScript.Instance.ResetHealth();
+
+        Debug.Log("Setting health");
     }
 
     // Update is called once per frame
@@ -397,15 +412,12 @@ public class PlayerBehaviour : MonoBehaviour {
     
     void Die()
     {
-        
         // TODO make character spin around and throw in the air; deactivate collider
 
         isAlive = false;
 
         isDying = false;
-
         
-
         playerCollider.enabled = false;
 
         rigidBody.constraints = RigidbodyConstraints.None;
@@ -422,9 +434,6 @@ public class PlayerBehaviour : MonoBehaviour {
         while (true)
         {
             transform.Rotate(Vector3.back, 10f * Time.deltaTime);
-
-            //transform.Translate(Vector3.forward * 0.1f * Time.deltaTime);
-
             yield return null;
         }
     }
@@ -451,14 +460,14 @@ public class PlayerBehaviour : MonoBehaviour {
 
                 foreach (ContactPoint point in collision.contacts)
                 {
-                    Debug.Log("Point: " + (transform.position.x - point.point.x) + ", " + point.point.y);
-
-                    
+                    Debug.Log("Point: " + (transform.position.x - point.point.x) + ", " + point.point.y);    
                 }
 
                 animator.SetBool("WasHit", true);
 
                 health--;
+
+                LifeScript.Instance.SetHealth((float)health / maxHealth);
 
                 if (health == 0)
                 {
