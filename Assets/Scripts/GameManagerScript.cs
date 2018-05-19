@@ -49,7 +49,16 @@ public class GameManagerScript : MonoBehaviour
 		if (playerDied)
         {
             playerDied = false;
-            LoadAtCheckpoint();
+            
+            StartCoroutine("RespawnPlayer");
         }
 	}
+
+    IEnumerator RespawnPlayer()
+    {
+        // wait 2sec before respawn
+        yield return new WaitForSeconds(2f);
+
+        LoadAtCheckpoint();
+    }
 }

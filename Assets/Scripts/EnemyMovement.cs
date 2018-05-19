@@ -23,7 +23,7 @@ public class EnemyMovement : MonoBehaviour {
     void Awake () {
 
         bodyCollider = GetComponent<BoxCollider>();
-        headCollider = GetComponent<SphereCollider>();
+        headCollider = transform.GetChild(1).GetComponent<SphereCollider>();
 
         rigidBody = GetComponent<Rigidbody>();
 
@@ -128,5 +128,9 @@ public class EnemyMovement : MonoBehaviour {
         DestroyImmediate(gameObject);
 
         yield return null;
+
+        
     }
+
+
 }

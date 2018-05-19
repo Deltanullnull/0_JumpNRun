@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4793812566017714}
   - component: {fileID: 33551449984223556}
   - component: {fileID: 23425918420703752}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Box001
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -38,6 +38,7 @@ GameObject:
   - component: {fileID: 4278314732635656}
   - component: {fileID: 33132383453320172}
   - component: {fileID: 23303356156578024}
+  - component: {fileID: 135484417841035484}
   m_Layer: 0
   m_Name: Head
   m_TagString: Enemy
@@ -58,7 +59,7 @@ GameObject:
   - component: {fileID: 135550285319297224}
   - component: {fileID: 114827536494431858}
   - component: {fileID: 65914498321528926}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -72,7 +73,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1652314657090728}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.702, y: 0.30654, z: 0}
+  m_LocalPosition: {x: 3.15, y: 0.45, z: 0}
   m_LocalScale: {x: 0.47757375, y: 0.47757378, z: 0.47757378}
   m_Children:
   - {fileID: 4793812566017714}
@@ -105,7 +106,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4080883937443258}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -25.247562, y: 90, z: -90}
 --- !u!23 &23303356156578024
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -258,6 +259,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsAlive: 0
   Value: 50
+--- !u!135 &135484417841035484
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1064117223978182}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.37
+  m_Center: {x: -0.004479155, y: -0.0020105694, z: 0.63}
 --- !u!135 &135550285319297224
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -266,7 +279,7 @@ SphereCollider:
   m_GameObject: {fileID: 1652314657090728}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.38
   m_Center: {x: 0.09, y: 1.13, z: 0}

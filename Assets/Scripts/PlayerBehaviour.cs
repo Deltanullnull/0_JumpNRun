@@ -37,8 +37,8 @@ public class PlayerBehaviour : MonoBehaviour {
     bool wasHit = false;
     bool knockbacking = false;
 
-    int invicibleTime = 60;
-    int invicibleTimeRemaining = 0;
+    int invincibleTime = 60;
+    int invincibleTimeRemaining = 0;
 
     private int hitDirection = 0;
     
@@ -77,9 +77,6 @@ public class PlayerBehaviour : MonoBehaviour {
         }
 
         remainingJumpTime = jumpMax;
-
-        
-
         
     }
 
@@ -95,23 +92,14 @@ public class PlayerBehaviour : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (invicibleTimeRemaining > 0)
-        {
-            // Turn off collider with enemy
 
-            Physics.IgnoreLayerCollision(10, 11, true);
-            invicibleTimeRemaining--;
-        }
-        else
-        {
-            Physics.IgnoreLayerCollision(10, 11, false);
-        }
-        
         // Fell to the death
 
         if (transform.position.y < -2f)
         {
             GameManagerScript.Instance.playerDied = true;
+
+            LifeScript.Instance.SetHealth(0);
 
             DestroyImmediate(gameObject);
             return;
@@ -217,7 +205,9 @@ public class PlayerBehaviour : MonoBehaviour {
             animator.SetBool("WasHit", false);
             knockbacking = true;
 
-            invicibleTimeRemaining = invicibleTime;
+            StartCoroutine("Invincibility");
+
+            invincibleTimeRemaining = invincibleTime;
 
             // TODO hit from which direction?
             rigidBody.velocity = new Vector3(-2 * hitDirection, 2, 0);
@@ -286,6 +276,56 @@ public class PlayerBehaviour : MonoBehaviour {
         }
     }
 
+    IEnumerator Invincibility()
+    {
+        // TODO change so that we still can collide with head
+        Physics.IgnoreLayerCollision(10, 11, true);
+
+        GameObject meshComponent = transform.GetChild(1).gameObject;
+
+        Color materialColor = meshComponent.GetComponent<Renderer>().material.color;
+
+        
+
+        for (int i = 0; i < invincibleTime; i++)
+        {
+            // make flashing
+
+            if ((i / 5) % 2 == 0)
+            {
+                materialColor.a = 0;
+            }
+            else
+            {
+                materialColor.a = 1;
+            }
+            
+            
+            foreach (Material material in meshComponent.GetComponent<Renderer>().materials)
+            {
+                material.color = materialColor;
+                //meshComponent.GetComponent<Renderer>().material.color = materialColor;
+            }
+            
+
+            yield return null;
+        }
+
+        materialColor.a = 1;
+
+        foreach (Material material in meshComponent.GetComponent<Renderer>().materials)
+        {
+            material.color = materialColor;
+            //meshComponent.GetComponent<Renderer>().material.color = materialColor;
+        }
+
+        //meshComponent.GetComponent<Renderer>().material.color = materialColor;
+
+        Physics.IgnoreLayerCollision(10, 11, false);
+
+        yield return null;
+    }
+
     bool TouchingWall(out int direction)
     {
         RaycastHit hitInfo;
@@ -344,8 +384,6 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         if (remainingJumpTime > 0)
         {
-            //Debug.Log("Jumping: " + remainingJumpTime);
-
             rigidBody.velocity = new Vector3(0, jumpSpeed, 0);
 
             remainingJumpTime--;
@@ -358,8 +396,7 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         Debug.Log("Wall jump");
 
-        // TODO get direction of jump
-
+        // get direction of jump
         rigidBody.velocity = new Vector3(-wallDirection * 5, jumpSpeed * 1.5f, 0);
 
         remainingJumpTime = 0;
@@ -369,14 +406,10 @@ public class PlayerBehaviour : MonoBehaviour {
 
     void JumpStart()
     {
-        //Debug.Log("Start jump with current vel: " + rigidBody.velocity );
-
         if (remainingJumpTime > 0 && !inAir)
         {
             rigidBody.velocity = new Vector3(0, jumpSpeed, 0);
-
-            //rigidBody.AddForce(new Vector3(0, jumpSpeed / 5f, 0), ForceMode.Impulse);
-
+            
             remainingJumpTime--;
         }
 
@@ -502,7 +535,7 @@ public class PlayerBehaviour : MonoBehaviour {
         
         if (other.tag == "Checkpoint")
         {
-            // TODO trigger checkpoint
+            // trigger checkpoint
             GameManagerScript.Instance.PassCheckpoint(other.gameObject);
         }
     }
@@ -513,6 +546,5 @@ public class PlayerBehaviour : MonoBehaviour {
         enemy.GetComponent<EnemyMovement>().Die();
 
         killedEnemy = true;
-        //Destroy(enemy);
     }
 }
