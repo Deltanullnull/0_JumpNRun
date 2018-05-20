@@ -77,7 +77,10 @@ public class PlayerBehaviour : MonoBehaviour {
         }
 
         remainingJumpTime = jumpMax;
-        
+
+        Physics.IgnoreLayerCollision(11, 12); // Ignore Enemy - PlayerFeet
+        Physics.IgnoreLayerCollision(10, 13); // Ignore Head - Player
+
     }
 
     private void Start()
@@ -85,16 +88,12 @@ public class PlayerBehaviour : MonoBehaviour {
         health = maxHealth;
 
         LifeScript.Instance.ResetHealth();
-
-        Debug.Log("Setting health");
     }
 
     // Update is called once per frame
     void Update()
     {
-
         // Fell to the death
-
         if (transform.position.y < -2f)
         {
             GameManagerScript.Instance.playerDied = true;
@@ -107,10 +106,6 @@ public class PlayerBehaviour : MonoBehaviour {
 
         if (!isAlive)
             return;
-
-
-        
-
         
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             moveHorizontal = -1f;
@@ -365,11 +360,13 @@ public class PlayerBehaviour : MonoBehaviour {
             return false;
         }
 
-        int ignoreLayer = ~(1 << 10);
+        int ignoreLayer = ~LayerMask.GetMask("PlayerFeet"); // Ignore layer with player feet
 
         if (Physics.Raycast(ray, out hitInfo, 10f, ignoreLayer))
         {
-            if (hitInfo.collider != footCollider)
+            Debug.Log("Hit ground: " + hitInfo.distance);
+
+            //if (hitInfo.collider != footCollider)
             {
                 return hitInfo.distance <= playerCollider.size.y / 2 + 0.001f;
             }
@@ -478,24 +475,34 @@ public class PlayerBehaviour : MonoBehaviour {
         if (collision.gameObject.tag == "Platform")
             return;
 
+        
+
         if (collision.gameObject.tag == "Enemy" && collision.gameObject.GetComponent<EnemyMovement>().IsAlive)
         {
+
+            Debug.Log("Me:");
+            foreach (ContactPoint point in collision.contacts)
+            {
+                Debug.Log("Point: " + (point.point.x - transform.position.x) + ", " + (point.point.y - transform.position.y));
+            }
+
+            Debug.Log("Other:");
+            foreach (ContactPoint point in collision.contacts)
+            {
+                Debug.Log("Point: " + (point.point.x - collision.gameObject.transform.position.x) + ", " + (point.point.y - collision.gameObject.transform.position.y));
+            }
+
             if (collision.collider.GetType() == typeof(BoxCollider)) // Body
             {
-                Debug.Log("Ouch");
-
+                //Debug.Log("Ouch");
+                
                 float contactPoint = transform.position.x - collision.contacts[0].point.x;
 
                 if (contactPoint > 0)
                     hitDirection = -1;
                 else
                     hitDirection = 1;
-
-                foreach (ContactPoint point in collision.contacts)
-                {
-                    Debug.Log("Point: " + (transform.position.x - point.point.x) + ", " + point.point.y);    
-                }
-
+                
                 animator.SetBool("WasHit", true);
 
                 health--;
@@ -515,8 +522,11 @@ public class PlayerBehaviour : MonoBehaviour {
             }
             else if (collision.collider.GetType() == typeof(SphereCollider)) // Head
             {
-                Debug.Log("Kill");
-
+                // We usually have only one collision point
+                float contactPoint =  collision.contacts[0].point.y - transform.position.y;
+                
+                //if (contactPoint < 0.15) // Lower part of player collides with head
+                // Not working, since we'll push enemy unless we jump on its head
                 KillEnemy(collision.gameObject);
             }
 

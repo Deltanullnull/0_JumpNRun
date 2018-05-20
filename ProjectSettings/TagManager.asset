@@ -21,8 +21,8 @@ TagManager:
   - Checkpoint
   - Player
   - Enemy
-  - 
-  - 
+  - PlayerFeet
+  - EnemyHead
   - 
   - 
   - 

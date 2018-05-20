@@ -95,7 +95,25 @@ public class EnemyMovement : MonoBehaviour {
         rigidBody.MovePosition(rigidBody.transform.position + new Vector3(moveDirection, 0, 0) * Time.deltaTime);
     }
 
-    
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag != "Player")
+            return;
+
+        //Debug.Log("Me:");
+        //foreach (ContactPoint point in collision.contacts)
+        //{
+        //    Debug.Log("Point: " + (point.point.x - transform.position.x) + ", " + (point.point.y - transform.position.y));
+        //}
+
+        //Debug.Log("Other:");
+        //foreach (ContactPoint point in collision.contacts)
+        //{
+        //    Debug.Log("Point: " + (point.point.x - collision.gameObject.transform.position.x) + ", " + (point.point.y - collision.gameObject.transform.position.y));
+        //}
+    }
+
 
     public void Die()
     {
