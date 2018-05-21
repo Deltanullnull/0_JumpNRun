@@ -9,6 +9,8 @@ public class GameManagerScript : MonoBehaviour
 
     public bool playerDied = false;
 
+    public bool levelActive = true;
+
     GameObject lastCheckpoint;
 
 	// Use this for initialization
@@ -41,7 +43,13 @@ public class GameManagerScript : MonoBehaviour
         
 
         Camera.main.GetComponent<CameraMovement>().playerObject = player;
+    }
 
+    public void WinLevel()
+    {
+        Debug.Log("Level finished!");
+
+        levelActive = false;
     }
 	
 	// Update is called once per frame

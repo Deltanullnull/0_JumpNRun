@@ -93,6 +93,7 @@ public class PlayerBehaviour : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        
         // Fell to the death
         if (transform.position.y < -2f)
         {
@@ -107,12 +108,20 @@ public class PlayerBehaviour : MonoBehaviour {
         if (!isAlive)
             return;
         
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-            moveHorizontal = -1f;
-        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-            moveHorizontal = 1f;
+        if (GameManagerScript.Instance.levelActive)
+        {
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+                moveHorizontal = -1f;
+            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+                moveHorizontal = 1f;
+            else
+                moveHorizontal = 0f;
+        }
         else
+        {
             moveHorizontal = 0f;
+        }
+        
      
 
         // TODO set currentMoveHorizontal instantly to zero when sliding
@@ -147,6 +156,8 @@ public class PlayerBehaviour : MonoBehaviour {
 
     void FixedUpdate()
     {
+        
+
         if (!isAlive)
             return;
 
@@ -224,41 +235,44 @@ public class PlayerBehaviour : MonoBehaviour {
         // if we hold space down, set spaceDown to true
         // if spaceDown, we cannot reach JumpStart()
 
-        if (Input.GetKey(KeyCode.Space)) 
+        if (GameManagerScript.Instance.levelActive)
         {
-            if (killedEnemy)
+            if (Input.GetKey(KeyCode.Space))
             {
-                JumpAfterKill();
-            }
-            else if (inAir && !sliding)
-            {
-                Jump();
-            }
-            else if (IsGrounded() && !spacePressed)
-            {
-                JumpStart();
-            }
-            else if (sliding && !spacePressed)
-            {
-                WallJump(wallDirection);
-            }
+                if (killedEnemy)
+                {
+                    JumpAfterKill();
+                }
+                else if (inAir && !sliding)
+                {
+                    Jump();
+                }
+                else if (IsGrounded() && !spacePressed)
+                {
+                    JumpStart();
+                }
+                else if (sliding && !spacePressed)
+                {
+                    WallJump(wallDirection);
+                }
 
-            spacePressed = true;
-        }
-        else
-        {
-            
-            if (killedEnemy)
-            {
-                JumpAfterKill();
+                spacePressed = true;
             }
             else
             {
-                if (inAir)
-                    remainingJumpTime = 0;
-            }
 
-            spacePressed = false;
+                if (killedEnemy)
+                {
+                    JumpAfterKill();
+                }
+                else
+                {
+                    if (inAir)
+                        remainingJumpTime = 0;
+                }
+
+                spacePressed = false;
+            }
         }
 
         bool releaseWall = (sliding && moveDirection.x * wallDirection < 0);
@@ -364,7 +378,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
         if (Physics.Raycast(ray, out hitInfo, 10f, ignoreLayer))
         {
-            Debug.Log("Hit ground: " + hitInfo.distance);
+            //Debug.Log("Hit ground: " + hitInfo.distance);
 
             //if (hitInfo.collider != footCollider)
             {
@@ -547,6 +561,12 @@ public class PlayerBehaviour : MonoBehaviour {
         {
             // trigger checkpoint
             GameManagerScript.Instance.PassCheckpoint(other.gameObject);
+        }
+
+        if (other.tag == "Goal")
+        {
+            // TODO finish level
+            GameManagerScript.Instance.WinLevel();
         }
     }
 
