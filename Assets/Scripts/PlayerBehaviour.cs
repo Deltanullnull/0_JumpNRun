@@ -14,6 +14,8 @@ public class PlayerBehaviour : MonoBehaviour {
 
     private bool jumping = false;
 
+    private AudioSource[] audioSteps;
+
     [SerializeField]
     private int health;
 
@@ -61,6 +63,7 @@ public class PlayerBehaviour : MonoBehaviour {
         animator = GetComponent<Animator>();
         playerCollider = GetComponent<BoxCollider>();
 
+        audioSteps = GetComponents<AudioSource>();
         var colliders = GetComponents<BoxCollider>();
 
         foreach (BoxCollider coll in colliders)
@@ -97,11 +100,22 @@ public class PlayerBehaviour : MonoBehaviour {
         // Fell to the death
         if (transform.position.y < -2f)
         {
-            GameManagerScript.Instance.playerDied = true;
+            if (!audioSteps[5].isPlaying && audioSteps[5].time == 0)
+            {
+                LifeScript.Instance.SetHealth(0);
 
-            LifeScript.Instance.SetHealth(0);
+                audioSteps[5].time = 0.35f;
+                audioSteps[5].Play();
+            }
+            else if (!audioSteps[5].isPlaying)
+            {
+                GameManagerScript.Instance.playerDied = true;
 
-            DestroyImmediate(gameObject);
+                DestroyImmediate(gameObject);
+            }
+                
+
+            
             return;
         }
 
@@ -183,6 +197,8 @@ public class PlayerBehaviour : MonoBehaviour {
                 inAir = false;
                 
                 Land();
+
+                audioSteps[3].Play();
             }
         }
         else
@@ -210,6 +226,8 @@ public class PlayerBehaviour : MonoBehaviour {
             wasHit = false;
             animator.SetBool("WasHit", false);
             knockbacking = true;
+
+            audioSteps[4].Play();
 
             StartCoroutine("Invincibility");
 
@@ -422,6 +440,8 @@ public class PlayerBehaviour : MonoBehaviour {
             rigidBody.velocity = new Vector3(0, jumpSpeed, 0);
             
             remainingJumpTime--;
+
+            audioSteps[2].Play();
         }
 
         inAir = true;
@@ -448,6 +468,8 @@ public class PlayerBehaviour : MonoBehaviour {
     void Land()
     {
         remainingJumpTime = jumpMax;
+
+        
 
         //Debug.Log("Landed");
     }
@@ -548,6 +570,15 @@ public class PlayerBehaviour : MonoBehaviour {
         }
     }
 
+    void StepRight()
+    {
+        audioSteps[0].Play();
+    }
+
+    void StepLeft()
+    {
+        audioSteps[1].Play();
+    }
 
     void OnTriggerEnter(Collider other)
     {
