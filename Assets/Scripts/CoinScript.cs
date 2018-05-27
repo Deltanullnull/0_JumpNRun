@@ -24,6 +24,8 @@ public class CoinScript : MonoBehaviour {
     {
         if (wasCollected)
         {
+            AudioScript.Instance.PlaySound(0);
+
             ScoreManager.instance.IncreaseScore(Value);
 
             DestroyImmediate(gameObject);
