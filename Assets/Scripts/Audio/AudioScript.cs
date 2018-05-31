@@ -18,12 +18,14 @@ public class AudioScript : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
 		
 	}
 
-    public void PlaySound(int idx)
+    public void PlaySound(int idx, float startTime = 0f, float endTime = 0f)
     {
+        audioSources[idx].time = startTime;
         audioSources[idx].Play();
     }
 }

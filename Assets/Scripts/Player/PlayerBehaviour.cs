@@ -39,6 +39,8 @@ public class PlayerBehaviour : MonoBehaviour {
     bool wasHit = false;
     bool knockbacking = false;
 
+    
+
     int invincibleTime = 60;
     int invincibleTimeRemaining = 0;
 
@@ -100,21 +102,14 @@ public class PlayerBehaviour : MonoBehaviour {
         // Fell to the death
         if (transform.position.y < -2f)
         {
-            if (!audioSteps[5].isPlaying && audioSteps[5].time == 0)
-            {
-                LifeScript.Instance.SetHealth(0);
+            
+            AudioScript.Instance.PlaySound(1, 0.35f);
 
-                audioSteps[5].time = 0.35f;
-                audioSteps[5].Play();
-            }
-            else if (!audioSteps[5].isPlaying)
-            {
-                GameManagerScript.Instance.playerDied = true;
+            LifeScript.Instance.SetHealth(0);
 
-                DestroyImmediate(gameObject);
-            }
-                
+            GameManagerScript.Instance.playerDied = true;
 
+            DestroyImmediate(gameObject);
             
             return;
         }
@@ -169,9 +164,7 @@ public class PlayerBehaviour : MonoBehaviour {
  
 
     void FixedUpdate()
-    {
-        
-
+    {        
         if (!isAlive)
             return;
 
@@ -209,11 +202,20 @@ public class PlayerBehaviour : MonoBehaviour {
 
                 sliding = true;
 
+                knockbacking = false;
+
+
+                GetComponent<SlidingScript>().SetParticleVisible(true);
+
                 currentMoveHorizontal = 0;
 
 
                 // reduce falling speed
                 rigidBody.velocity = new Vector3(0, -0.5f, 0) * Time.deltaTime;
+            }
+            else
+            {
+                GetComponent<SlidingScript>().SetParticleVisible(false);
             }
 
             animator.SetBool("Grounded", false);
