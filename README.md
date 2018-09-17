@@ -1,6 +1,5 @@
 # 0_JumpNRun
 
-This is my first big Unity project (ok, it's a simple Jump n run)
+This is a simple Jump n run game in which the player has to reach the goal and avoid being hit by enemies. In order to increase the score, the player can collect coins. The enemies can be defeated by jumping on them.
 
-Bugs:
-* When the player is jumping off the wall right after starting wall jump, the character won't stick to the wall
+More features like particle effects, various enemy types and new levels will be added in the future.
